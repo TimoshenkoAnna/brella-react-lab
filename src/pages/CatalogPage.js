@@ -1,22 +1,26 @@
 import { useState, useEffect } from 'react';
 import ProductCard from '../components/ProductCard/ProductCard.js';
-import Modal from '../components/Modal/Modal.js'; 
+import Modal from '../components/Modal/Modal.js';
 import initialProducts from '../data/products.json';
 import './CatalogPage.css';
 
 function CatalogPage() {
   const [products, setProducts] = useState([]);
-
-  const [modalActive, setModalActive] = useState(false); 
-  const [selectedProduct, setSelectedProduct] = useState(null); 
+  const [modalActive, setModalActive] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     setProducts(initialProducts);
   }, []);
 
   const handleViewDetails = (product) => {
-    setSelectedProduct(product); 
-    setModalActive(true);       
+    setSelectedProduct(product);
+    setModalActive(true);
+  };
+
+  const handleDeleteProduct = (productId) => {
+   
+    setProducts(products.filter(product => product.id !== productId));
   };
 
   return (
@@ -27,24 +31,23 @@ function CatalogPage() {
           <ProductCard
             key={product.id}
             product={product}
-            onViewDetails={handleViewDetails} 
+            onViewDetails={handleViewDetails}
+            onDelete={handleDeleteProduct} 
           />
         ))}
       </div>
 
       {}
       <Modal active={modalActive} setActive={setModalActive}>
-        {}
         {selectedProduct && (
-          <div className="product-details">
-            <img className="product-details-image" src={selectedProduct.image} alt={selectedProduct.name} />
-            <h2>{selectedProduct.name}</h2>
-            <p>{selectedProduct.description}</p>
-            <h3>Цена: {selectedProduct.price} BYN</h3>
-            {}
-            <button className="modal-close-button" onClick={() => setModalActive(false)}>Закрыть</button>
-          </div>
-        )}
+           <div className="product-details">
+             <img className="product-details-image" src={selectedProduct.image} alt={selectedProduct.name} />
+             <h2>{selectedProduct.name}</h2>
+             <p>{selectedProduct.description}</p>
+             <h3>Цена: {selectedProduct.price} BYN</h3>
+             <button className="modal-close-button" onClick={() => setModalActive(false)}>Закрыть</button>
+           </div>
+         )}
       </Modal>
     </div>
   );

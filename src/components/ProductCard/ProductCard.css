@@ -48,3 +48,22 @@
 .product-card-button:hover {
   background-color: #0056b3;
 }
+
+.product-card-actions {
+  display: flex; 
+  gap: 10px; 
+}
+
+.product-card-button.details {
+  background-color: #007bff;
+}
+.product-card-button.details:hover {
+  background-color: #0056b3;
+}
+
+.product-card-button.delete {
+  background-color: #dc3545; 
+}
+.product-card-button.delete:hover {
+  background-color: #c82333;
+}
