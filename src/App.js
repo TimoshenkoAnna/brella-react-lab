@@ -1,5 +1,10 @@
+
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header/Header.js';
 import Footer from './components/Footer/Footer.js';
+import HomePage from './pages/HomePage.js';
+import CatalogPage from './pages/CatalogPage.js';
+import AboutPage from './pages/AboutPage.js';
 import './App.css';
 
 function App() {
@@ -7,10 +12,15 @@ function App() {
     <div className="app-wrapper">
       <Header />
       <main className="main-content">
-         <h1>Содержимое страницы будет здесь</h1>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/about" element={<AboutPage />} />
+        </Routes>
       </main>
       <Footer />
     </div>
   );
 }
+
 export default App;
