@@ -9,6 +9,8 @@ function CatalogPage() {
   const [modalActive, setModalActive] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const [selectedIds, setSelectedIds] = useState([]);
+
   useEffect(() => {
     setProducts(initialProducts);
   }, []);
@@ -24,7 +26,7 @@ function CatalogPage() {
 
   const handleAddProduct = () => {
     const newProduct = {
-      id: Date.now(), 
+      id: Date.now(),
       name: "Новинка",
       type: "Одежда",
       description: "Это новый товар, добавленный для демонстрации работы со state.",
@@ -34,15 +36,26 @@ function CatalogPage() {
     setProducts([newProduct, ...products]);
   };
 
+  const handleSelectProduct = (productId) => {
+
+    if (selectedIds.includes(productId)) {
+
+      setSelectedIds(selectedIds.filter(id => id !== productId));
+    } else {
+    
+      setSelectedIds([...selectedIds, productId]);
+    }
+  };
+
   return (
     <div>
       <h2>Каталог наших работ</h2>
+      <p>Выбрано товаров: {selectedIds.length}</p> {
 
-      {}
+      }
       <button className="add-product-button" onClick={handleAddProduct}>
         Добавить новый товар
       </button>
-      {}
 
       <div className="catalog-grid">
         {products.map(product => (
@@ -51,6 +64,8 @@ function CatalogPage() {
             product={product}
             onViewDetails={handleViewDetails}
             onDelete={handleDeleteProduct}
+            onSelect={handleSelectProduct} 
+            isSelected={selectedIds.includes(product.id)} 
           />
         ))}
       </div>
