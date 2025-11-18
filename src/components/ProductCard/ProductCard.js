@@ -1,13 +1,14 @@
 import './ProductCard.css';
 
-function ProductCard({ product }) {
+function ProductCard({ product, onViewDetails }) {
   return (
     <div className="product-card">
       <img className="product-card-image" src={product.image} alt={product.name} />
       <div className="product-card-body">
         <h3 className="product-card-title">{product.name}</h3>
         <p className="product-card-price">{product.price} BYN</p>
-        <button className="product-card-button">
+        {}
+        <button className="product-card-button" onClick={() => onViewDetails(product)}>
           Подробнее
         </button>
       </div>
