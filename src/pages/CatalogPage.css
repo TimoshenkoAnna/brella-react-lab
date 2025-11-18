@@ -42,3 +42,21 @@
 .modal-close-button:hover {
   background-color: #c82333;
 }
+
+
+.add-product-button {
+  padding: 10px 20px;
+  margin-bottom: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: #28a745;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-product-button:hover {
+  background-color: #218838;
+}
