@@ -1,43 +1,21 @@
-.product-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+.product-card-image {
+  height: 250px;
+  object-fit: cover;
 }
 
-.product-card:hover {
+.card {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-.product-card-image {
-  width: 100%;
-  height: 280px;
-  object-fit: cover;
-}
-
-.product-card-body {
-  padding: 20px;
-  flex-grow: 1;
+.product-card-actions {
   display: flex;
-  flex-direction: column;
-}
-
-.product-card-title {
-  font-size: 1.25rem;
-  margin: 0 0 10px 0;
-}
-
-.product-card-price {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 20px 0;
-  margin-top: auto;
+  gap: 10px;
 }
 
 .product-card-button {
@@ -53,14 +31,10 @@
   text-align: center;
 }
 
-.product-card-actions {
-  display: flex;
-  gap: 10px;
-}
-
 .product-card-button.details {
   background-color: #007bff;
 }
+
 .product-card-button.details:hover {
   background-color: #0056b3;
 }
@@ -68,6 +42,7 @@
 .product-card-button.edit {
   background-color: #6c757d;
 }
+
 .product-card-button.edit:hover {
   background-color: #5a6268;
 }
@@ -75,11 +50,11 @@
 .product-card-button.delete {
   background-color: #dc3545;
 }
+
 .product-card-button.delete:hover {
   background-color: #c82333;
 }
 
-.product-card.selected {
-  border: 3px solid #007bff;
-  box-shadow: 0 8px 20px rgba(0, 123, 255, 0.25);
+.card.border-primary {
+  border-width: 2px !important;
 }
