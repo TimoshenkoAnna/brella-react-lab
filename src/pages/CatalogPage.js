@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Row } from 'react-bootstrap'; // Импортировали Row
 import ProductCard from '../components/ProductCard/ProductCard.js';
 import Modal from '../components/Modal/Modal.js';
 import initialProducts from '../data/products.json';
@@ -26,7 +27,7 @@ function CatalogPage() {
     setModalContent({ type: 'view', product });
     setModalActive(true);
   };
-
+  
   const handleOpenAddModal = () => {
     setModalContent({ type: 'add', product: emptyProduct });
     setModalActive(true);
@@ -38,21 +39,21 @@ function CatalogPage() {
   };
 
   const handleDeleteProduct = (productId) => {
-    setProducts(products.filter(product => product.id !== productId));
+    if (window.confirm('Вы уверены, что хотите удалить этот товар?')) {
+      setProducts(products.filter(product => product.id !== productId));
+    }
   };
 
   const handleSaveProduct = (productToSave) => {
     if (modalContent.type === 'add') {
-
       const newProduct = { ...productToSave, id: Date.now() };
       setProducts([newProduct, ...products]);
     } else if (modalContent.type === 'edit') {
-
       setProducts(products.map(p => p.id === productToSave.id ? productToSave : p));
     }
     setModalActive(false);
   };
-
+  
   const handleSelectProduct = (productId) => {
     setSelectedIds(prevSelectedIds =>
       prevSelectedIds.includes(productId)
@@ -64,11 +65,12 @@ function CatalogPage() {
   return (
     <div>
       <h2>Каталог наших работ</h2>
+      <p>Выбрано товаров: {selectedIds.length}</p>
       <button className="add-product-button" onClick={handleOpenAddModal}>
         Добавить новый товар
       </button>
 
-      <div className="catalog-grid">
+      <Row>
         {products.map(product => (
           <ProductCard
             key={product.id}
@@ -76,11 +78,11 @@ function CatalogPage() {
             onViewDetails={handleViewDetails}
             onEdit={handleOpenEditModal}
             onDelete={handleDeleteProduct}
-            onSelect={handleSelectProduct}
-            isSelected={selectedIds.includes(product.id)}
+            onSelect={handleSelectProduct} 
+            isSelected={selectedIds.includes(product.id)} 
           />
         ))}
-      </div>
+      </Row>
 
       <Modal active={modalActive} setActive={setModalActive}>
         {modalContent.product && (
