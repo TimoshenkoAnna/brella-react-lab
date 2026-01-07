@@ -1,30 +1,17 @@
-import { LinkContainer } from 'react-router-bootstrap';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Container, Stack } from 'react-bootstrap';
 
-function Header() {
+function Footer() {
   return (
-    <Navbar bg="light" expand="lg" sticky="top" collapseOnSelect className="border-bottom">
+    <footer className="bg-dark text-white mt-auto py-3">
       <Container>
-        <LinkContainer to="/">
-          <Navbar.Brand className="fw-bold">Custom Clothes</Navbar.Brand>
-        </LinkContainer>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="ms-auto">
-            <LinkContainer to="/">
-              <Nav.Link>Главная</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/catalog">
-              <Nav.Link>Каталог</Nav.Link>
-            </LinkContainer>
-            <LinkContainer to="/about">
-              <Nav.Link>О нас</Nav.Link>
-            </LinkContainer>
-          </Nav>
-        </Navbar.Collapse>
+        <Stack direction="horizontal" gap={3} className="justify-content-center">
+          <div>© 2025 Custom Clothes</div>
+          <div className="vr" />
+          <div>Все права защищены</div>
+        </Stack>
       </Container>
-    </Navbar>
+    </footer>
   );
 }
 
-export default Header;
+export default Footer;
