@@ -1,4 +1,4 @@
-import { Col, Card } from 'react-bootstrap';
+import { Col, Card, Button } from 'react-bootstrap';
 import './ProductCard.css';
 
 function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, onEdit }) {
@@ -18,17 +18,17 @@ function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, o
           
           <div className="mt-auto">
             <Card.Text as="h5" className="mb-3">{product.price} BYN</Card.Text>
-            {/* Старые кнопки и стили пока остаются без изменений */}
+            
             <div className="product-card-actions">
-              <button className="product-card-button details" onClick={(e) => { e.stopPropagation(); onViewDetails(product); }}>
+              <Button variant="outline-primary" size="sm" className="w-100" onClick={(e) => { e.stopPropagation(); onViewDetails(product); }}>
                 Подробнее
-              </button>
-              <button className="product-card-button edit" onClick={(e) => { e.stopPropagation(); onEdit(product); }}>
+              </Button>
+              <Button variant="outline-secondary" size="sm" className="w-100" onClick={(e) => { e.stopPropagation(); onEdit(product); }}>
                 Изменить
-              </button>
-              <button className="product-card-button delete" onClick={(e) => { e.stopPropagation(); onDelete(product.id); }}>
+              </Button>
+              <Button variant="outline-danger" size="sm" className="w-100" onClick={(e) => { e.stopPropagation(); onDelete(product.id); }}>
                 Удалить
-              </button>
+              </Button>
             </div>
           </div>
         </Card.Body>
