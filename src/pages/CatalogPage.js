@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Row, Col, Button, Modal, Image } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Form, Image } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard/ProductCard.js';
 import initialProducts from '../data/products.json';
 
@@ -24,6 +24,60 @@ const ProductDetails = ({ product }) => (
     </Col>
   </Row>
 );
+
+const ProductForm = ({ product, onSave }) => {
+  const [formData, setFormData] = useState(product);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <Form onSubmit={handleSubmit}>
+      <Form.Group className="mb-3">
+        <Form.Label>Название</Form.Label>
+        <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} required />
+      </Form.Group>
+      
+      <Form.Group className="mb-3">
+        <Form.Label>Тип</Form.Label>
+        <Form.Control type="text" name="type" value={formData.type} onChange={handleChange} required />
+      </Form.Group>
+      
+      <Form.Group className="mb-3">
+        <Form.Label>Описание</Form.Label>
+        <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} required />
+      </Form.Group>
+      
+      <Row>
+        <Col>
+          <Form.Group className="mb-3">
+            <Form.Label>Цена (BYN)</Form.Label>
+            <Form.Control type="number" name="price" value={formData.price} onChange={handleChange} required />
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group className="mb-3">
+            <Form.Label>URL изображения</Form.Label>
+            <Form.Control type="text" name="image" value={formData.image} onChange={handleChange} required />
+          </Form.Group>
+        </Col>
+      </Row>
+      
+      <div className="d-flex justify-content-end">
+        <Button variant="primary" type="submit">
+          Сохранить
+        </Button>
+      </div>
+    </Form>
+  );
+};
 
 function CatalogPage() {
   const [products, setProducts] = useState([]);
@@ -112,19 +166,14 @@ function CatalogPage() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {
-
-            }
             {modalContent.type === 'view' ? 
               <ProductDetails product={modalContent.product} /> :
-              <p>Здесь будет форма...</p>
+              <ProductForm 
+                product={modalContent.product} 
+                onSave={handleSaveProduct}
+              />
             }
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Закрыть
-            </Button>
-          </Modal.Footer>
         </Modal>
       )}
     </div>
