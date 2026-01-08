@@ -40,41 +40,14 @@ const ProductForm = ({ product, onSave }) => {
 
   return (
     <Form onSubmit={handleSubmit}>
-      <Form.Group className="mb-3">
-        <Form.Label>Название</Form.Label>
-        <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} required />
-      </Form.Group>
-      
-      <Form.Group className="mb-3">
-        <Form.Label>Тип</Form.Label>
-        <Form.Control type="text" name="type" value={formData.type} onChange={handleChange} required />
-      </Form.Group>
-      
-      <Form.Group className="mb-3">
-        <Form.Label>Описание</Form.Label>
-        <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} required />
-      </Form.Group>
-      
+      <Form.Group className="mb-3"><Form.Label>Название</Form.Label><Form.Control type="text" name="name" value={formData.name} onChange={handleChange} required /></Form.Group>
+      <Form.Group className="mb-3"><Form.Label>Тип</Form.Label><Form.Control type="text" name="type" value={formData.type} onChange={handleChange} required /></Form.Group>
+      <Form.Group className="mb-3"><Form.Label>Описание</Form.Label><Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} required /></Form.Group>
       <Row>
-        <Col>
-          <Form.Group className="mb-3">
-            <Form.Label>Цена (BYN)</Form.Label>
-            <Form.Control type="number" name="price" value={formData.price} onChange={handleChange} required />
-          </Form.Group>
-        </Col>
-        <Col>
-          <Form.Group className="mb-3">
-            <Form.Label>URL изображения</Form.Label>
-            <Form.Control type="text" name="image" value={formData.image} onChange={handleChange} required />
-          </Form.Group>
-        </Col>
+        <Col><Form.Group className="mb-3"><Form.Label>Цена (BYN)</Form.Label><Form.Control type="number" name="price" value={formData.price} onChange={handleChange} required /></Form.Group></Col>
+        <Col><Form.Group className="mb-3"><Form.Label>URL изображения</Form.Label><Form.Control type="text" name="image" value={formData.image} onChange={handleChange} required /></Form.Group></Col>
       </Row>
-      
-      <div className="d-flex justify-content-end">
-        <Button variant="primary" type="submit">
-          Сохранить
-        </Button>
-      </div>
+      <div className="d-flex justify-content-end"><Button variant="primary" type="submit">Сохранить</Button></div>
     </Form>
   );
 };
@@ -84,66 +57,57 @@ function CatalogPage() {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ type: 'view', product: null });
   const [selectedIds, setSelectedIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // <-- НОВАЯ ФУНКЦИЯ: состояние для поиска
 
   useEffect(() => {
     setProducts(initialProducts);
   }, []);
-
-  const handleClose = () => setShowModal(false);
-
-  const handleViewDetails = (product) => {
-    setModalContent({ type: 'view', product });
-    setShowModal(true);
-  };
   
-  const handleOpenAddModal = () => {
-    setModalContent({ type: 'add', product: { ...emptyProduct } });
-    setShowModal(true);
-  };
-
-  const handleOpenEditModal = (product) => {
-    setModalContent({ type: 'edit', product });
-    setShowModal(true);
-  };
-
-  const handleDeleteProduct = (productId) => {
-    if (window.confirm('Вы уверены, что хотите удалить этот товар?')) {
-      setProducts(products.filter(product => product.id !== productId));
-    }
-  };
-
+  const handleClose = () => setShowModal(false);
+  const handleViewDetails = (product) => { setModalContent({ type: 'view', product }); setShowModal(true); };
+  const handleOpenAddModal = () => { setModalContent({ type: 'add', product: { ...emptyProduct } }); setShowModal(true); };
+  const handleOpenEditModal = (product) => { setModalContent({ type: 'edit', product }); setShowModal(true); };
+  const handleDeleteProduct = (productId) => { if (window.confirm('Вы уверены?')) { setProducts(products.filter(p => p.id !== productId)); } };
   const handleSaveProduct = (productToSave) => {
-    if (modalContent.type === 'add') {
-      const newProduct = { ...productToSave, id: Date.now() };
-      setProducts([newProduct, ...products]);
-    } else if (modalContent.type === 'edit') {
-      setProducts(products.map(p => p.id === productToSave.id ? productToSave : p));
-    }
+    if (modalContent.type === 'add') { setProducts([{ ...productToSave, id: Date.now() }, ...products]); } 
+    else if (modalContent.type === 'edit') { setProducts(products.map(p => p.id === productToSave.id ? productToSave : p)); }
     handleClose();
   };
+  const handleSelectProduct = (productId) => { setSelectedIds(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]); };
   
-  const handleSelectProduct = (productId) => {
-    setSelectedIds(prev =>
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
-  
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <div>
-          <h2>Каталог наших работ</h2>
-          <p className="text-muted mb-0">Выбрано товаров: {selectedIds.length}</p>
-        </div>
-        <Button variant="success" onClick={handleOpenAddModal}>
-          + Добавить товар
-        </Button>
-      </div>
+      <Row className="mb-4 align-items-center">
+        <Col md={4}>
+          <h2>Каталог</h2>
+          <p className="text-muted mb-0">Выбрано: {selectedIds.length}</p>
+        </Col>
+        <Col md={5}>
+          {
+
+          }
+          <Form.Control 
+            type="text"
+            placeholder="Поиск по названию..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Col>
+        <Col md={3} className="text-end">
+          <Button variant="success" onClick={handleOpenAddModal}>+ Добавить товар</Button>
+        </Col>
+      </Row>
 
       <Row>
-        {products.map(product => (
+        {
+          
+        }
+        {filteredProducts.map(product => (
           <ProductCard
             key={product.id}
             product={product}
@@ -156,26 +120,7 @@ function CatalogPage() {
         ))}
       </Row>
       
-      {modalContent.product && (
-        <Modal show={showModal} onHide={handleClose} centered size="lg">
-          <Modal.Header closeButton>
-            <Modal.Title>
-              {
-                {'view': 'Подробная информация', 'edit': 'Редактирование товара', 'add': 'Добавление товара'}[modalContent.type]
-              }
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {modalContent.type === 'view' ? 
-              <ProductDetails product={modalContent.product} /> :
-              <ProductForm 
-                product={modalContent.product} 
-                onSave={handleSaveProduct}
-              />
-            }
-          </Modal.Body>
-        </Modal>
-      )}
+      {modalContent.product && ( <Modal show={showModal} onHide={handleClose} centered size="lg"> <Modal.Header closeButton> <Modal.Title> { {'view': 'Подробная информация', 'edit': 'Редактирование товара', 'add': 'Добавление товара'}[modalContent.type] } </Modal.Title> </Modal.Header> <Modal.Body> {modalContent.type === 'view' ? <ProductDetails product={modalContent.product} /> : <ProductForm product={modalContent.product} onSave={handleSaveProduct} /> } </Modal.Body> </Modal> )}
     </div>
   );
 }
