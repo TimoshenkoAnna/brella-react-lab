@@ -5,7 +5,8 @@
     "type": "Одежда",
     "description": "Базовая хлопковая футболка, украшенная тонкой ручной вышивкой. Каждый стежок сделан с любовью.",
     "price": 120,
-    "image": "%PUBLIC_URL%/images/product1.jpg"
+    "image": "%PUBLIC_URL%/images/product1.jpg",
+    "status": "in_stock"
   },
   {
     "id": 2,
@@ -13,7 +14,8 @@
     "type": "Верхняя одежда",
     "description": "Классическая черная кожаная куртка, расписанная вручную стойкими акриловыми красками. Яркий рисунок придает ей дерзкий и уникальный вид.",
     "price": 450,
-    "image": "%PUBLIC_URL%/images/product6.jpg"
+    "image": "%PUBLIC_URL%/images/product6.jpg",
+    "status": "on_order"
   },
   {
     "id": 3,
@@ -21,6 +23,7 @@
     "type": "Аксессуары",
     "description": "Элегантная сумка ручной работы, полностью инкрустированная сияющими стразами. Идеальный аксессуар для вечернего выхода, который не оставит вас незамеченной.",
     "price": 280,
-    "image": "%PUBLIC_URL%/images/product2.jpg"
+    "image": "%PUBLIC_URL%/images/product2.jpg",
+    "status": "in_stock"
   }
 ]

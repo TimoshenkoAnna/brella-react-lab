@@ -1,4 +1,4 @@
-import { Col, Card, Button, ButtonGroup } from 'react-bootstrap';
+import { Col, Card, Button, ButtonGroup, Badge } from 'react-bootstrap';
 import './ProductCard.css';
 
 function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, onEdit }) {
@@ -13,7 +13,13 @@ function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, o
           className="product-card-image"
         />
         <Card.Body className="d-flex flex-column">
-          <Card.Title>{product.name}</Card.Title>
+          <div className="d-flex justify-content-between align-items-start">
+            <Card.Title>{product.name}</Card.Title>
+            <Badge bg={product.status === 'in_stock' ? 'success' : 'warning'}>
+              {product.status === 'in_stock' ? 'В наличии' : 'Под заказ'}
+            </Badge>
+          </div>
+
           <Card.Text className="text-muted">{product.type}</Card.Text>
           
           <div className="mt-auto">
