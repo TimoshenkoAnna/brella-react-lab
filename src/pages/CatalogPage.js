@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Row, Col, Button, Modal, Form, Image } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Form, Image, Dropdown, DropdownButton } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard/ProductCard.js';
 import initialProducts from '../data/products.json';
 
@@ -57,7 +57,8 @@ function CatalogPage() {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ type: 'view', product: null });
   const [selectedIds, setSelectedIds] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // <-- НОВАЯ ФУНКЦИЯ: состояние для поиска
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortOrder, setSortOrder] = useState('default'); 
 
   useEffect(() => {
     setProducts(initialProducts);
@@ -69,28 +70,40 @@ function CatalogPage() {
   const handleOpenEditModal = (product) => { setModalContent({ type: 'edit', product }); setShowModal(true); };
   const handleDeleteProduct = (productId) => { if (window.confirm('Вы уверены?')) { setProducts(products.filter(p => p.id !== productId)); } };
   const handleSaveProduct = (productToSave) => {
-    if (modalContent.type === 'add') { setProducts([{ ...productToSave, id: Date.now() }, ...products]); } 
-    else if (modalContent.type === 'edit') { setProducts(products.map(p => p.id === productToSave.id ? productToSave : p)); }
+    if (modalContent.type === 'add') {
+      const newProduct = { ...productToSave, id: Date.now() };
+      setProducts([newProduct, ...products]);
+    } else if (modalContent.type === 'edit') {
+      setProducts(products.map(p => p.id === productToSave.id ? productToSave : p));
+    }
     handleClose();
   };
-  const handleSelectProduct = (productId) => { setSelectedIds(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]); };
+  const handleSelectProduct = (productId) => {
+    setSelectedIds(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]);
+  };
   
-
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const processedProducts = products
+    .filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortOrder === 'price_asc') {
+        return a.price - b.price;
+      }
+      if (sortOrder === 'price_desc') {
+        return b.price - a.price;
+      }
+      return 0; 
+    });
 
   return (
     <div>
-      <Row className="mb-4 align-items-center">
+      <Row className="mb-4 align-items-center gy-3">
         <Col md={4}>
           <h2>Каталог</h2>
           <p className="text-muted mb-0">Выбрано: {selectedIds.length}</p>
         </Col>
         <Col md={5}>
-          {
-
-          }
           <Form.Control 
             type="text"
             placeholder="Поиск по названию..."
@@ -98,8 +111,16 @@ function CatalogPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </Col>
-        <Col md={3} className="text-end">
-          <Button variant="success" onClick={handleOpenAddModal}>+ Добавить товар</Button>
+        <Col md={3} className="d-flex justify-content-end gap-2">
+          {
+
+          }
+          <DropdownButton id="dropdown-basic-button" title="Сортировка" variant="outline-secondary">
+            <Dropdown.Item onClick={() => setSortOrder('default')}>По умолчанию</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSortOrder('price_asc')}>Сначала дешевле</Dropdown.Item>
+            <Dropdown.Item onClick={() => setSortOrder('price_desc')}>Сначала дороже</Dropdown.Item>
+          </DropdownButton>
+          <Button variant="success" onClick={handleOpenAddModal}>+ Добавить</Button>
         </Col>
       </Row>
 
@@ -107,7 +128,7 @@ function CatalogPage() {
         {
           
         }
-        {filteredProducts.map(product => (
+        {processedProducts.map(product => (
           <ProductCard
             key={product.id}
             product={product}
