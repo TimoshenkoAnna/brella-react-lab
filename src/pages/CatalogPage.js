@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Row, Button, Modal } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Image } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard/ProductCard.js';
 import initialProducts from '../data/products.json';
 
@@ -11,9 +11,23 @@ const emptyProduct = {
   image: '%PUBLIC_URL%/images/new-item.jpg'
 };
 
+const ProductDetails = ({ product }) => (
+  <Row>
+    <Col md={6}>
+      <Image src={product.image.replace('%PUBLIC_URL%', process.env.PUBLIC_URL)} fluid rounded />
+    </Col>
+    <Col md={6} className="d-flex flex-column justify-content-center">
+      <h3>{product.name}</h3>
+      <p className="text-muted">{product.type}</p>
+      <p>{product.description}</p>
+      <h4 className="mt-3">Цена: {product.price} BYN</h4>
+    </Col>
+  </Row>
+);
+
 function CatalogPage() {
   const [products, setProducts] = useState([]);
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({ type: 'view', product: null });
   const [selectedIds, setSelectedIds] = useState([]);
 
@@ -21,7 +35,7 @@ function CatalogPage() {
     setProducts(initialProducts);
   }, []);
 
-  const handleClose = () => setShowModal(false); 
+  const handleClose = () => setShowModal(false);
 
   const handleViewDetails = (product) => {
     setModalContent({ type: 'view', product });
@@ -61,7 +75,7 @@ function CatalogPage() {
         : [...prev, productId]
     );
   };
-
+  
   return (
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -98,7 +112,13 @@ function CatalogPage() {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Здесь будет контент...</p>
+            {
+
+            }
+            {modalContent.type === 'view' ? 
+              <ProductDetails product={modalContent.product} /> :
+              <p>Здесь будет форма...</p>
+            }
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
