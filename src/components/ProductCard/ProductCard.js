@@ -1,4 +1,4 @@
-import { Col, Card, Button } from 'react-bootstrap';
+import { Col, Card, Button, ButtonGroup } from 'react-bootstrap';
 import './ProductCard.css';
 
 function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, onEdit }) {
@@ -19,17 +19,17 @@ function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, o
           <div className="mt-auto">
             <Card.Text as="h5" className="mb-3">{product.price} BYN</Card.Text>
             
-            <div className="product-card-actions">
-              <Button variant="outline-primary" size="sm" className="w-100" onClick={(e) => { e.stopPropagation(); onViewDetails(product); }}>
+            <ButtonGroup className="w-100">
+              <Button variant="outline-primary" size="sm" onClick={(e) => { e.stopPropagation(); onViewDetails(product); }}>
                 Подробнее
               </Button>
-              <Button variant="outline-secondary" size="sm" className="w-100" onClick={(e) => { e.stopPropagation(); onEdit(product); }}>
+              <Button variant="outline-secondary" size="sm" onClick={(e) => { e.stopPropagation(); onEdit(product); }}>
                 Изменить
               </Button>
-              <Button variant="outline-danger" size="sm" className="w-100" onClick={(e) => { e.stopPropagation(); onDelete(product.id); }}>
+              <Button variant="outline-danger" size="sm" onClick={(e) => { e.stopPropagation(); onDelete(product.id); }}>
                 Удалить
               </Button>
-            </div>
+            </ButtonGroup>
           </div>
         </Card.Body>
       </Card>
