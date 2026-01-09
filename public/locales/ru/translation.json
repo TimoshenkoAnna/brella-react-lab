@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "about": "About Us"
+  },
+  "catalog_page": {
+    "title": "Our Works Catalog"
+  }
+}

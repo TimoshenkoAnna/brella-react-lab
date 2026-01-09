@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Button, Modal, Form, Image, Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -48,6 +49,9 @@ const ProductForm = ({ product, onSave }) => {
 };
 
 function CatalogPage() {
+
+  const { t } = useTranslation();
+
   const dispatch = useDispatch();
 
   const products = useSelector(selectAllProducts);
@@ -88,7 +92,7 @@ function CatalogPage() {
     <div>
       <Row className="mb-4 align-items-center gy-3">
         <Col md={4}>
-            <h2 className="mb-0">Каталог</h2>
+           <h2 className="mb-0">{t('catalog_page.title')}</h2>
             <p className="text-muted mb-0">Найдено: {processedProducts.length} | Выбрано: {selectedIds.length}</p>
         </Col>
         <Col md={5}>
