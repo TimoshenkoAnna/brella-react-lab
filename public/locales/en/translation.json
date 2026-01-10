@@ -1,0 +1,55 @@
+{
+  "nav": {
+    "home": "Home",
+    "catalog": "Catalog",
+    "about": "About Us"
+  },
+  "home_page": {
+    "title": "Welcome to our workshop!",
+    "subtitle": "We specialize in hand-customizing clothing, turning ordinary items into unique works of art.",
+    "text": "Here, every item gets a second life and becomes a reflection of your individuality. Explore our catalog to find inspiration or contact us to create something completely new."
+  },
+  "about_page": {
+    "title": "About Us",
+    "p1": "We are a small but passionate team of artists and designers united by a love for style, art, and self-expression. Our mission is to give clothes a second life, transforming them from everyday wardrobe items into unique art pieces.",
+    "p2": "Every embroidery, drawing, или rhinestone inlay is done by hand with special attention to detail. We believe that clothing should tell a story and reflect the inner world of its owner.",
+    "p3": "Join our movement for conscious and creative fashion!"
+  },
+  "catalog_page": {
+    "title": "Catalog",
+    "found": "Found",
+    "selected": "Selected",
+    "search_placeholder": "Search by name...",
+    "sort_button": "Sort by",
+    "sort_default": "Default",
+    "sort_price_asc": "Price: Low to High",
+    "sort_price_desc": "Price: High to Low",
+    "add_button": "+ Add",
+    "add_tooltip": "Create a new item"
+  },
+  "product_card": {
+    "details_button": "Details",
+    "edit_button": "Edit",
+    "delete_button": "Delete",
+    "status_in_stock": "In Stock",
+    "status_on_order": "On Order"
+  },
+  "modal": {
+    "view_title": "Detailed Information",
+    "edit_title": "Edit Item",
+    "add_title": "Add Item",
+    "price_label": "Price",
+    "form_name": "Name",
+    "form_type": "Type",
+    "form_description": "Description",
+    "form_price": "Price (USD)",
+    "form_image_url": "Image URL",
+    "save_button": "Save"
+  },
+  "currency": "USD",
+
+  "footer": {
+  "copyright": "© 2025 Custom Clothes",
+  "rights": "All rights reserved"
+}
+}

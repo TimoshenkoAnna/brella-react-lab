@@ -1,13 +1,16 @@
+import { useTranslation } from 'react-i18next';
 import './AboutPage.css';
 
 function AboutPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="about-container">
-      <h1 className="about-title">О нас</h1>
+      <h1 className="about-title">{t('about_page.title')}</h1>
       <div className="about-content">
-        <p>Мы - небольшая, но страстная команда художников и дизайнеров, объединенных любовью к стилю, искусству и самовыражению. Наша миссия — дать вторую жизнь одежде, превращая ее из обыденного предмета гардероба в уникальный арт-объект.</p>
-        <p>Каждая вышивка, рисунок или инкрустация стразами выполняется вручную с особым вниманием к деталям. Мы верим, что одежда должна рассказывать историю и отражать внутренний мир своего владельца.</p>
-        <p>Присоединяйтесь к нашему движению за осознанную и креативную моду!</p>
+        <p>{t('about_page.p1')}</p>
+        <p>{t('about_page.p2')}</p>
+        <p>{t('about_page.p3')}</p>
       </div>
     </div>
   );

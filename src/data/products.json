@@ -1,29 +1,56 @@
 [
   {
     "id": 1,
-    "name": "Футболка с вышивкой",
-    "type": "Одежда",
-    "description": "Базовая хлопковая футболка, украшенная тонкой ручной вышивкой. Каждый стежок сделан с любовью.",
-    "price": 120,
     "image": "%PUBLIC_URL%/images/product1.jpg",
-    "status": "in_stock"
+    "status": "in_stock",
+    "price": 120,
+    "i18n": {
+      "ru": {
+        "name": "Футболка с вышивкой",
+        "type": "Одежда",
+        "description": "Базовая хлопковая футболка, украшенная тонкой ручной вышивкой. Каждый стежок сделан с любовью."
+      },
+      "en": {
+        "name": "Embroidered T-shirt",
+        "type": "Clothing",
+        "description": "A basic cotton t-shirt decorated with delicate hand embroidery. Every stitch is made with love."
+      }
+    }
   },
   {
     "id": 2,
-    "name": "Кожаная куртка",
-    "type": "Верхняя одежда",
-    "description": "Классическая черная кожаная куртка, расписанная вручную стойкими акриловыми красками. Яркий рисунок придает ей дерзкий и уникальный вид.",
-    "price": 450,
     "image": "%PUBLIC_URL%/images/product6.jpg",
-    "status": "on_order"
+    "status": "on_order",
+    "price": 450,
+    "i18n": {
+      "ru": {
+        "name": "Кожаная куртка",
+        "type": "Верхняя одежда",
+        "description": "Классическая черная кожаная куртка, расписанная вручную стойкими акриловыми красками. Яркий рисунок придает ей дерзкий и уникальный вид."
+      },
+      "en": {
+        "name": "Leather Jacket",
+        "type": "Outerwear",
+        "description": "A classic black leather jacket hand-painted with durable acrylic paints. The bright design gives it a bold and unique look."
+      }
+    }
   },
   {
     "id": 3,
-    "name": "Сумка",
-    "type": "Аксессуары",
-    "description": "Элегантная сумка ручной работы, полностью инкрустированная сияющими стразами. Идеальный аксессуар для вечернего выхода, который не оставит вас незамеченной.",
-    "price": 280,
     "image": "%PUBLIC_URL%/images/product2.jpg",
-    "status": "in_stock"
+    "status": "in_stock",
+    "price": 280,
+    "i18n": {
+      "ru": {
+        "name": "Сумка",
+        "type": "Аксессуары",
+        "description": "Элегантная сумка ручной работы, полностью инкрустированная сияющими стразами. Идеальный аксессуар для вечернего выхода."
+      },
+      "en": {
+        "name": "Handbag",
+        "type": "Accessories",
+        "description": "An elegant handmade bag fully encrusted with sparkling rhinestones. The perfect accessory for an evening out."
+      }
+    }
   }
 ]

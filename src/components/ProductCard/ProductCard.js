@@ -1,8 +1,12 @@
+import { useTranslation } from 'react-i18next';
 import { Col, Card, Button, ButtonGroup, Badge } from 'react-bootstrap';
 import './ProductCard.css';
 
 function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, onEdit }) {
+  const { t, i18n } = useTranslation();
   const cardClasses = isSelected ? 'border-primary border-2' : '';
+
+  const productLocale = product.i18n[i18n.language] || product.i18n.ru;
 
   return (
     <Col md={6} lg={4} className="mb-4">
@@ -14,26 +18,26 @@ function ProductCard({ product, onViewDetails, onDelete, onSelect, isSelected, o
         />
         <Card.Body className="d-flex flex-column">
           <div className="d-flex justify-content-between align-items-start">
-            <Card.Title>{product.name}</Card.Title>
+            <Card.Title>{productLocale.name}</Card.Title>
             <Badge bg={product.status === 'in_stock' ? 'success' : 'warning'}>
-              {product.status === 'in_stock' ? 'В наличии' : 'Под заказ'}
+              {t(product.status === 'in_stock' ? 'product_card.status_in_stock' : 'product_card.status_on_order')}
             </Badge>
           </div>
 
-          <Card.Text className="text-muted">{product.type}</Card.Text>
+          <Card.Text className="text-muted">{productLocale.type}</Card.Text>
           
           <div className="mt-auto">
-            <Card.Text as="h5" className="mb-3">{product.price} BYN</Card.Text>
+            <Card.Text as="h5" className="mb-3">{product.price} {t('currency')}</Card.Text>
             
             <ButtonGroup className="w-100">
               <Button variant="outline-primary" size="sm" onClick={(e) => { e.stopPropagation(); onViewDetails(product); }}>
-                Подробнее
+                {t('product_card.details_button')}
               </Button>
               <Button variant="outline-secondary" size="sm" onClick={(e) => { e.stopPropagation(); onEdit(product); }}>
-                Изменить
+                {t('product_card.edit_button')}
               </Button>
               <Button variant="outline-danger" size="sm" onClick={(e) => { e.stopPropagation(); onDelete(product.id); }}>
-                Удалить
+                {t('product_card.delete_button')}
               </Button>
             </ButtonGroup>
           </div>

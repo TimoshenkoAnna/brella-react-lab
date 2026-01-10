@@ -1,11 +1,14 @@
+import { useTranslation } from 'react-i18next';
 import './HomePage.css';
 
 function HomePage() {
+  const { t } = useTranslation();
+
   return (
     <div className="home-container">
-      <h1 className="home-title">Добро пожаловать в нашу мастерскую!</h1>
-      <p className="home-subtitle">Мы специализируемся на ручной кастомизации одежды, превращая обычные вещи в уникальные произведения искусства.</p>
-      <p className="home-text">Здесь каждая вещь обретает вторую жизнь и становится отражением вашей индивидуальности. Исследуйте наш каталог, чтобы найти вдохновение, или свяжитесь с нами для создания чего-то совершенно нового.</p>
+      <h1 className="home-title">{t('home_page.title')}</h1>
+      <p className="home-subtitle">{t('home_page.subtitle')}</p>
+      <p className="home-text">{t('home_page.text')}</p>
     </div>
   );
 }
