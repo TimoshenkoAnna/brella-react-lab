@@ -4,8 +4,7 @@ const API_URL = 'http://localhost:5000/api/products';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
     const response = await fetch(API_URL);
-    const data = await response.json();
-    return data;
+    return await response.json();
 });
 
 export const addNewProduct = createAsyncThunk('products/addNewProduct', async (newProduct) => {
@@ -14,13 +13,23 @@ export const addNewProduct = createAsyncThunk('products/addNewProduct', async (n
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newProduct)
     });
-    const data = await response.json();
-    return data;
+    return await response.json();
 });
+
+
+export const updateProduct = createAsyncThunk('products/updateProduct', async (productToUpdate) => {
+    const response = await fetch(`${API_URL}/${productToUpdate.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productToUpdate)
+    });
+    return await response.json();
+});
+
 
 export const deleteProductById = createAsyncThunk('products/deleteProductById', async (productId) => {
     await fetch(`${API_URL}/${productId}`, { method: 'DELETE' });
-    return productId; 
+    return productId;
 });
 
 const productsSlice = createSlice({
@@ -30,29 +39,25 @@ const productsSlice = createSlice({
     status: 'idle',
     error: null
   },
-  reducers: {}, 
+  reducers: {},
   extraReducers(builder) {
     builder
-
-        .addCase(fetchProducts.pending, (state) => {
-            state.status = 'loading';
-        })
-        .addCase(fetchProducts.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            state.items = action.payload;
-        })
-        .addCase(fetchProducts.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error = action.error.message;
-        })
-
-        .addCase(addNewProduct.fulfilled, (state, action) => {
-            state.items = action.payload; 
-        })
-
+        .addCase(fetchProducts.pending, (state) => { state.status = 'loading'; })
+        .addCase(fetchProducts.fulfilled, (state, action) => { state.status = 'succeeded'; state.items = action.payload; })
+        .addCase(fetchProducts.rejected, (state, action) => { state.status = 'failed'; state.error = action.error.message; })
+        .addCase(addNewProduct.fulfilled, (state, action) => { state.items = action.payload; })
         .addCase(deleteProductById.fulfilled, (state, action) => {
             state.items = state.items.filter(item => item.id !== action.payload);
+        })
+        
+        .addCase(updateProduct.fulfilled, (state, action) => {
+            const updatedProduct = action.payload;
+            const index = state.items.findIndex(item => item.id === updatedProduct.id);
+            if (index !== -1) {
+                state.items[index] = updatedProduct;
+            }
         });
+       
   }
 });
 

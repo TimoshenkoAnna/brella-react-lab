@@ -1,27 +1,34 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Button, DropdownButton, OverlayTrigger, Tooltip, Form, Modal } from 'react-bootstrap';
+import { Row, Col, Button, Modal, Form, Image, Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import ProductCard from '../components/ProductCard/ProductCard.js';
 import ProductDetails from '../components/ProductDetails.js';
 import ProductForm from '../components/ProductForm.js';
 
-import { fetchProducts, addNewProduct, deleteProductById } from '../features/products/productsSlice';
+import { fetchProducts, addNewProduct, deleteProductById, updateProduct } from '../features/products/productsSlice';
 import { selectAllProducts, getProductsStatus } from '../features/products/productsSlice';
-import { setSearchTerm, setSortOrder, openModal, closeModal } from '../features/ui/uiSlice';
+import { openModal, closeModal } from '../features/ui/uiSlice';
 
 const downloadFile = async (format) => {
-    const response = await fetch('http://localhost:5000/api/products/export', {
-        headers: { 'Accept': `application/${format}` }
-    });
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `products.${format}`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    try {
+        const response = await fetch(`http://localhost:5000/api/products/export`, {
+            headers: { 'Accept': format === 'html' ? `text/html` : `application/${format}` }
+        });
+        if (!response.ok) throw new Error('Network response was not ok.');
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `products.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error("Ошибка при скачивании файла:", error);
+    }
 }
 
 function CatalogPage() {
@@ -30,11 +37,13 @@ function CatalogPage() {
 
   const products = useSelector(selectAllProducts);
   const productsStatus = useSelector(getProductsStatus);
-  const { searchTerm, sortOrder, modal } = useSelector((state) => state.ui);
+  const { modal } = useSelector((state) => state.ui);
   
+  const [selectedIds, setSelectedIds] = useState([]);
+
   useEffect(() => {
     if (productsStatus === 'idle') {
-      dispatch(fetchProducts()); 
+      dispatch(fetchProducts());
     }
   }, [productsStatus, dispatch]);
   
@@ -50,39 +59,43 @@ function CatalogPage() {
   };
   
   const handleSaveProduct = (productToSave) => {
-
     if (modal.type === 'add') {
-      dispatch(addNewProduct(productToSave)); 
+      dispatch(addNewProduct(productToSave));
+    } else if (modal.type === 'edit') {
+      dispatch(updateProduct(productToSave));
     }
     handleClose();
   };
   
-  const processedProducts = [...products]
-    .filter(product => {
-      const productLocale = product.i18n[i18n.language] || product.i18n.ru;
-      return productLocale.name && productLocale.name.toLowerCase().includes(searchTerm.toLowerCase());
-    })
-    .sort((a, b) => {
-      if (sortOrder === 'price_asc') { return a.price - b.price; }
-      if (sortOrder === 'price_desc') { return b.price - a.price; }
-      return 0;
-    });
+  const handleSelectProduct = (productId) => {
+    setSelectedIds(prev => prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId]);
+  };
+
+  const getModalTitle = () => {
+    if (modal.type === 'view') return t('modal.view_title');
+    if (modal.type === 'edit') return t('modal.edit_title');
+    if (modal.type === 'add') return t('modal.add_title');
+    return '';
+  }
 
   let content;
   if (productsStatus === 'loading') {
-    content = <p>"Загрузка товаров..."</p>;
+    content = <Col><p>"Загрузка товаров..."</p></Col>;
   } else if (productsStatus === 'succeeded') {
-    content = processedProducts.map(product => (
+   
+    content = products.map(product => (
       <ProductCard
         key={product.id}
         product={product}
         onViewDetails={handleViewDetails}
         onEdit={handleOpenEditModal}
         onDelete={handleDeleteProduct}
-        onSelect={() => {}} 
-        isSelected={false}
+        onSelect={handleSelectProduct}
+        isSelected={selectedIds.includes(product.id)}
       />
     ));
+  } else if (productsStatus === 'failed') {
+      content = <Col><p>Ошибка загрузки товаров.</p></Col>
   }
 
   return (
@@ -90,9 +103,6 @@ function CatalogPage() {
       <Row className="mb-4 align-items-center gy-3">
         <Col md={4}><h2 className="mb-0">{t('catalog_page.title')}</h2></Col>
         <Col md={8} className="d-flex justify-content-end gap-2">
-            {
-
-            }
             <Button variant="info" size="sm" onClick={() => downloadFile('json')}>Скачать JSON</Button>
             <Button variant="info" size="sm" onClick={() => downloadFile('xml')}>Скачать XML</Button>
             <Button variant="info" size="sm" onClick={() => downloadFile('html')}>Скачать HTML</Button>
@@ -105,9 +115,7 @@ function CatalogPage() {
       {modal.data && (
         <Modal show={modal.isOpen} onHide={handleClose} centered size="lg">
           <Modal.Header closeButton>
-            {
-
-            }
+            <Modal.Title>{getModalTitle()}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             {modal.type === 'view' ? 

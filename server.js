@@ -9,16 +9,15 @@ const app = express();
 const PORT = 5000;
 const productsFilePath = path.join(__dirname, 'data', 'products.json');
 
-app.use(cors()); 
-app.use(bodyParser.json()); 
-app.use(express.static(path.join(__dirname, 'build'))); 
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'build')));
 
 const readProducts = async () => {
     try {
         const data = await fs.readFile(productsFilePath, 'utf-8');
         return JSON.parse(data);
     } catch (error) {
-
         if (error.code === 'ENOENT') return [];
         throw error;
     }
@@ -27,8 +26,6 @@ const readProducts = async () => {
 const writeProducts = async (data) => {
     await fs.writeFile(productsFilePath, JSON.stringify(data, null, 2));
 };
-
-
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -45,20 +42,36 @@ app.get('/api/products', async (req, res) => {
 
 app.post('/api/products', async (req, res) => {
     try {
-        const { name, price } = req.body;
-
+        const { name, price } = req.body.i18n.ru;
         if (!name || !price) {
             return res.status(400).json({ message: "Ошибка: Имя и цена обязательны для заполнения." });
         }
-
         const products = await readProducts();
         const newProduct = { ...req.body, id: Date.now() };
         products.unshift(newProduct);
         await writeProducts(products);
-        
         res.status(201).json(products);
     } catch (error) {
         res.status(500).json({ message: "Ошибка при создании товара" });
+    }
+});
+
+app.put('/api/products/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedProduct = req.body;
+        const products = await readProducts();
+        const index = products.findIndex(p => p.id === parseInt(id));
+
+        if (index === -1) {
+            return res.status(404).json({ message: "Товар для обновления не найден." });
+        }
+
+        products[index] = { ...products[index], ...updatedProduct };
+        await writeProducts(products);
+        res.json(products[index]);
+    } catch (error) {
+        res.status(500).json({ message: "Ошибка при обновлении товара" });
     }
 });
 
