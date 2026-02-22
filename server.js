@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
@@ -16,9 +18,13 @@ app.use(express.static(path.join(__dirname, 'build')));
 const readProducts = async () => {
     try {
         const data = await fs.readFile(productsFilePath, 'utf-8');
-        return JSON.parse(data);
+        const parsedData = JSON.parse(data);
+        return Array.isArray(parsedData) ? parsedData : [];
     } catch (error) {
-        if (error.code === 'ENOENT') return [];
+        if (error.code === 'ENOENT' || error instanceof SyntaxError) {
+            console.warn(`products.json не найден или пуст/некорректен. Создаем пустой массив.`);
+            return [];
+        }
         throw error;
     }
 };
@@ -42,16 +48,44 @@ app.get('/api/products', async (req, res) => {
 
 app.post('/api/products', async (req, res) => {
     try {
-        const { name, price } = req.body.i18n.ru;
-        if (!name || !price) {
+        const productData = req.body;
+
+        if (!productData.i18n?.ru?.name || !productData.price) {
             return res.status(400).json({ message: "Ошибка: Имя и цена обязательны для заполнения." });
         }
+
         const products = await readProducts();
-        const newProduct = { ...req.body, id: Date.now() };
+
+        // --- ГЛАВНОЕ ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+        // Мы больше не используем "плоский" объект.
+        // Мы явно создаем объект с правильной вложенной структурой `i18n`.
+        const newProduct = {
+            id: Date.now(),
+            price: productData.price,
+            image: productData.image || '', // Значение по умолчанию
+            status: productData.status || 'in_stock', // Значение по умолчанию
+            i18n: {
+                ru: {
+                    name: productData.i18n.ru.name,
+                    type: productData.i18n.ru.type || '',
+                    description: productData.i18n.ru.description || ''
+                },
+                en: {
+                    name: productData.i18n.en.name || '',
+                    type: productData.i18n.en.type || '',
+                    description: productData.i18n.en.description || ''
+                }
+            }
+        };
+        // ------------------------------------
+
         products.unshift(newProduct);
         await writeProducts(products);
-        res.status(201).json(products);
+
+        res.status(201).json(newProduct); // Отправляем только что созданный товар с правильной структурой
+
     } catch (error) {
+        console.error("Ошибка при создании товара:", error);
         res.status(500).json({ message: "Ошибка при создании товара" });
     }
 });
@@ -59,7 +93,7 @@ app.post('/api/products', async (req, res) => {
 app.put('/api/products/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedProduct = req.body;
+        const updatedProductData = req.body;
         const products = await readProducts();
         const index = products.findIndex(p => p.id === parseInt(id));
 
@@ -67,10 +101,27 @@ app.put('/api/products/:id', async (req, res) => {
             return res.status(404).json({ message: "Товар для обновления не найден." });
         }
 
-        products[index] = { ...products[index], ...updatedProduct };
+        // При обновлении важно глубоко "слить" объекты, чтобы не потерять i18n
+        const existingProduct = products[index];
+        products[index] = {
+            ...existingProduct,
+            ...updatedProductData,
+            i18n: {
+                ru: {
+                    ...existingProduct.i18n.ru,
+                    ...updatedProductData.i18n.ru,
+                },
+                en: {
+                    ...existingProduct.i18n.en,
+                    ...updatedProductData.i18n.en,
+                }
+            }
+        };
+        
         await writeProducts(products);
         res.json(products[index]);
     } catch (error) {
+        console.error("Ошибка при обновлении товара:", error);
         res.status(500).json({ message: "Ошибка при обновлении товара" });
     }
 });
@@ -88,6 +139,7 @@ app.delete('/api/products/:id', async (req, res) => {
         await writeProducts(filteredProducts);
         res.json({ message: "Товар успешно удален" });
     } catch (error) {
+        console.error("Ошибка при удалении товара:", error);
         res.status(500).json({ message: "Ошибка при удалении товара" });
     }
 });
@@ -95,37 +147,34 @@ app.delete('/api/products/:id', async (req, res) => {
 app.get('/api/products/export', async (req, res) => {
     try {
         const products = await readProducts();
-        
         res.format({
-
             'application/json': () => {
                 res.json(products);
             },
-
             'application/xml': () => {
                 const options = { compact: true, ignoreComment: true, spaces: 4 };
-                const xmlData = xml_js.json2xml(JSON.stringify({ products: { product: products } }), options);
+                const xmlData = xml_js.json2xml(JSON.stringify({ items: { product: products } }), options);
                 res.type('application/xml').send(xmlData);
             },
-
             'text/html': () => {
-                let html = '<h1>Каталог товаров</h1><ul>';
+                let html = '<h1>Каталог товаров</h1><table border="1"><thead><tr><th>ID</th><th>Название</th><th>Тип</th><th>Цена</th></tr></thead><tbody>';
                 products.forEach(p => {
-                    html += `<li><b>${p.i18n.ru.name}</b> - ${p.price} ${p.i18n.ru.currency || 'BYN'}</li>`;
+                    const productName = p.i18n?.ru?.name || p.name || 'N/A';
+                    const productType = p.i18n?.ru?.type || p.type || 'N/A';
+                    html += `<tr><td>${p.id}</td><td>${productName}</td><td>${productType}</td><td>${p.price} BYN</td></tr>`;
                 });
-                html += '</ul>';
+                html += '</tbody></table>';
                 res.type('text/html').send(html);
             },
-
             default: () => {
                 res.status(406).send('Формат не поддерживается');
             }
         });
     } catch (error) {
+        console.error("Ошибка при экспорте данных:", error);
         res.status(500).json({ message: "Ошибка при экспорте данных" });
     }
 });
-
 
 app.listen(PORT, () => {
     console.log(`Сервер запущен на порту ${PORT}`);

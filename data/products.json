@@ -1,5 +1,41 @@
 [
   {
+    "id": 1771784855153,
+    "price": "250",
+    "image": "%PUBLIC_URL%/images/product2.jpg",
+    "status": "in_stock",
+    "i18n": {
+      "ru": {
+        "name": "Подвеска",
+        "type": "Аксессуар",
+        "description": "Колье из серебра"
+      },
+      "en": {
+        "name": "Колье",
+        "type": "Аксессуар",
+        "description": "Колье из серебра"
+      }
+    }
+  },
+  {
+    "id": 1771784346885,
+    "price": "150",
+    "image": "%PUBLIC_URL%/images/product2.jpg",
+    "status": "in_stock",
+    "i18n": {
+      "ru": {
+        "name": "Кольцо",
+        "type": "Аксессуар",
+        "description": "Кольцо из серебра"
+      },
+      "en": {
+        "name": "Кольцо",
+        "type": "Аксессуар",
+        "description": "Кольцо из серебра"
+      }
+    }
+  },
+  {
     "id": 1,
     "image": "%PUBLIC_URL%/images/product1.jpg",
     "status": "in_stock",
